@@ -1,0 +1,384 @@
+
+# GREEN GRASS TILES
+
+"green grass UL" { 
+  collision none
+  frames [[ 0, 0 ]]
+}
+
+"green grass U" { 
+  collision none
+  frames [[ 1, 0 ]]
+}
+
+"green grass UR" { 
+  collision none
+  frames [[ 2, 0 ]]
+}
+
+"green grass L" { 
+  collision none
+  frames [[ 0, 1 ]]
+}
+
+"green grass" { 
+  collision none
+  frames [[ 1, 1 ]]
+}
+
+"green grass R" { 
+  collision none
+  frames [[ 2, 1 ]]
+}
+
+"green grass DL" { 
+  collision none
+  frames [[ 0, 2 ]]
+}
+
+"green grass D" { 
+  collision none
+  frames [[ 1, 2 ]]
+}
+
+"green grass DR" { 
+  collision none
+  frames [[ 2, 2 ]]
+}
+
+"green grass UD" { 
+  collision none
+  frames [[ 3, 0 ]]
+}
+
+"green grass LR" { 
+  collision none
+  frames [[ 3, 1 ]]
+}
+
+"tall grass" { 
+  collision none
+  frames [[ 3, 2 ]]
+}
+
+# YELLOW GRASS TILES
+
+"yellow grass UL" { 
+  collision none
+  frames [[ 5, 0 ]]
+}
+
+"yellow grass U" { 
+  collision none
+  frames [[ 6, 0 ]]
+}
+
+"yellow grass UR" { 
+  collision none
+  frames [[ 7, 0 ]]
+}
+
+"yellow grass L" { 
+  collision none
+  frames [[ 5, 1 ]]
+}
+
+"yellow grass" {
+  collision none
+  frames [[ 6, 1 ]]
+}
+
+"yellow grass R" { 
+  collision none
+  frames [[ 7, 1 ]]
+}
+
+"yellow grass DL" { 
+  collision none
+  frames [[ 5, 2 ]]
+}
+
+"yellow grass D" { 
+  collision none
+  frames [[ 6, 2 ]]
+}
+
+"yellow grass DR" { 
+  collision none
+  frames [[ 7, 2 ]]
+}
+
+
+"yellow grass" { 
+  collision none
+  frames [[ 8, 0 ]]
+}
+
+"yellow grass" { 
+  collision none
+  frames [[ 8, 0 ]]
+}
+
+"yellow grass" { 
+  collision none
+  frames [[ 9, 1 ]]
+}
+
+"yellow grass" { 
+  collision none
+  frames [[ 9, 1 ]]
+}
+
+
+# DECORATIVE
+
+"dirt path" {
+  collision none
+  frames [[ 4, 0 ]]
+}
+
+"brick path" {
+  collision none
+  frames [[ 7, 3 ]]
+}
+
+"small rocks" {
+  collision none
+  frames [[ 7, 4 ]]
+}
+
+"dirt" {
+  collision none
+  frames [[ 8, 3 ]]
+}
+
+"small rocks in dirt" {
+  collision none
+  frames [[ 8, 4 ]]
+}
+
+"sand" {
+  collision none
+  frames [[ 9, 3 ]]
+}
+
+"big seed on sand" {
+  collision none
+  frames [[ 9, 4 ]]
+}
+
+"driftwood on sand" {
+  collision none
+  frames [[ 10, 3 ]]
+}
+
+"sea shell in sand" {
+  collision none
+  frames [[ 10, 4 ]]
+}
+
+"wood post fence" {
+  collision solid
+  frames [[ 4, 1 ]]
+}
+
+"circle rock" {
+  collision solid
+  frames [[ 4, 2 ]]
+}
+
+"stone fence" {
+  collision solid
+  frames [[ 8, 2 ]]
+}
+
+"stone fence alt" {
+  collision solid
+  frames [[ 9, 2 ]]
+}
+
+# WALLS
+
+"wall" {
+  collision solid
+  frames [[ 2, 4 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 0, 4 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 4, 4 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 0, 3 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 4, 3 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 0, 5 ]]   
+}
+
+"wall" {
+  collision solid
+  frames [[ 4, 5 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 1, 6 ]]   
+}
+
+"wall" {
+  collision solid
+  frames [[ 3, 6 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 1, 3 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 3, 3 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 0, 6 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 4, 6 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 1, 7 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 2, 7 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 3, 7 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 1, 4 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 3, 4 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 1, 5 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 3, 5 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 2, 5 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 1, 8 ]]
+}
+
+"wall" {
+  collision solid
+  frames [[ 3, 8 ]]
+}
+
+"wall ledge" {
+  collision ledge
+  frames [[ 2, 3 ]]
+}
+
+# TREES
+
+"tree UL" {
+  collision solid
+  frames [[ 5, 4 ]]
+}
+
+"tree UR" {
+  collision solid
+  frames [[ 6, 4 ]]
+}
+
+"tree DL" {
+  collision solid
+  frames [[ 5, 5 ]]
+}
+
+"tree DR" {
+  collision solid
+  frames [[ 6, 5 ]]
+}
+
+"tree UL alt" {
+  collision solid
+  frames [[ 5, 3 ]]
+}
+
+"tree UR alt" {
+  collision solid
+  frames [[ 6, 3 ]]
+}
+
+# ANIMATED
+
+"flower 1" {
+  collision none
+  frames [ 
+    [ 11, 0, 30 ]
+    [ 12, 0, 30 ]
+    [ 13, 0, 30 ]
+    [ 14, 0, 30 ]
+  ]
+}
+
+"deep water" {
+  collision water
+  frames [ 
+    [ 15, 0, 30 ]
+    [ 16, 0, 30 ]
+    [ 17, 0, 30 ]
+    [ 18, 0, 30 ]
+  ]
+}
+
+"shallow water" {
+  collision water
+  frames [ 
+    [ 15, 1, 30 ]
+    [ 16, 1, 30 ]
+    [ 17, 1, 30 ]
+    [ 18, 1, 30 ]
+  ]
+}
