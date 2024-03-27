@@ -36,9 +36,9 @@ Tile_Info :: struct {
       clip_offset : Vec2i,
       duration    : i32,
     },
-    frame_count   : i32 `gon_serialize_never`,
-    current_frame : i32 `gon_serialize_never`,
-    frame_clock   : i32 `gon_serialize_never`,
+    frame_count   : i32,
+    current_frame : i32,
+    frame_clock   : i32,
   },
 }
 
@@ -433,135 +433,158 @@ Tileset_Editor : struct {
   mouseover_tile : i32,
   tile_size      : i32,
 
-  texture        : Texture,
-  tileset_size   : Vec2i, 
+  // texture        : Texture,
+  tileset_size   : Vec2i,
 
   selected_tile_info : int,
   selected_frame     : int,
-  tileset : [dynamic] Tile_Info
 }
 
 update_tileset_editor :: proc() {
-  using Tileset_Editor
+    using Tileset_Editor
 
-  mouse_tile_position := pixel_to_internal_units(
+    mouse_tile_position := pixel_to_internal_units(
 		pixel_position  = Mouse.position, 
 		internal_unit   = f32(tile_size), 
 	)
-  mouseover_tile = get_grid_index_checked(
+    mouseover_tile = get_grid_index_checked(
 		position  = mouse_tile_position, 
 		tile_size = { 1, 1 }, 
 		grid_size = { tileset_size.x, tileset_size.y },
 	)
-
-  if Mouse.left == KEYSTATE_PRESSED {
-    selected_tile = mouseover_tile
-  }
-
-  if imgui.Begin("Tileset Editor", nil, {}) {
-    imgui.TextUnformattedString(fmt.tprintf("tile_size: %v", tile_size))
-    imgui.TextUnformattedString(fmt.tprintf("tileset_size: %v", tileset_size))
-    imgui.TextUnformattedString(fmt.tprintf("mouseover_tile: %v", mouseover_tile))
-
-    if imgui.Button("Add Tile") {
-      append(&tileset, Tile_Info{})
-      selected_tile_info = len(tileset)
+    
+    if Mouse.left == KEYSTATE_PRESSED {
+        selected_tile = mouseover_tile
     }
     
-    for &ti, ti_i in tileset {  using ti
-      imgui.BeginGroup()
-      if imgui.TreeNodeEx(cstring(raw_data(
-        fmt.tprintf("%v: %v###%v\x00", ti_i, string(cstring(raw_data(&name))), ti_i),
-      )), {.SpanAvailWidth}) {
-        imgui.InputText("Name", cstring(raw_data(&name)), len(name), {})
-        
-        imgui.ComboEnumDynamic("Collision", collision)
-        imgui.TextUnformattedString(fmt.tprintf("Frame Count: %v", animation.frame_count))
-
-        {
-          using animation
-          imgui.InputInt("Frame Count", &frame_count)
-          frame_count = clamp(frame_count, 0, MAX_TILE_ANIM_FRAMES)
-          imgui.Indent()
-          for i in 0..<frame_count {
-            imgui.PushID(cstring(raw_data(
-              fmt.tprintf("%v\x00", i),
-            )))
-            frame := &frames[i]
-            imgui.InputInt("Frame Duration", &frame.duration)
-            imgui.TextUnformattedString(
-              fmt.tprintf("clip_offset: %v", frame.clip_offset),
-            )
-            if imgui.Button("Set Frame") {
-              frame.clip_offset = { 
-                (selected_tile == 0) ? 0 : (selected_tile % tileset_size.x),
-                (selected_tile == 0) ? 0 : (selected_tile / tileset_size.x),
-              }
-            }
-            imgui.Separator()
-            imgui.PopID()
-          }
-          imgui.Unindent()
+    if imgui.Begin("Tileset Editor", nil, {}) {
+        imgui.TextUnformattedString(fmt.tprintf("tile_size: %v", tile_size))
+        imgui.TextUnformattedString(fmt.tprintf("tileset_size: %v", tileset_size))
+        imgui.TextUnformattedString(fmt.tprintf("mouseover_tile: %v", mouseover_tile))
+        imgui.TextUnformattedString(fmt.tprintf("selected tile info: %v", selected_tile_info))
+    
+        if imgui.Button("Add Tile") {
+          append(&tile_info_lookup, Tile_Info{})
+          selected_tile_info = len(tile_info_lookup)
         }
+        
+        if imgui.Button("Save Tileset") {
+          save_tile_info()
+        }
+        
+        for &ti, ti_i in tile_info_lookup {  using ti
+            imgui.BeginGroup()
+            
+            {
+                tile_info := tile_info_lookup[ti_i]
+                tri := get_tile_render_info({ id = u32(ti_i) })
+                img_size := imgui.Vec2 { 16, 16 }
+                img_uv0  := imgui.Vec2 { 
+                    f32(tri.clip.x) / f32(tiles_texture.width ), 
+                    f32(tri.clip.y) / f32(tiles_texture.height),
+                }
+                img_uv1  := img_uv0 + imgui.Vec2 { 
+                    f32(tri.clip.w) / f32(tiles_texture.width ), 
+                    f32(tri.clip.h) / f32(tiles_texture.height),
+                }
+                imgui.ImageEx(tiles_texture.sdl_texture, img_size, img_uv0, img_uv1, { 1, 1, 1, 1 }, {})
+            }
 
-        imgui.TreePop()
-      }
-      imgui.EndGroup()
-      if imgui.IsItemClickedEx(.Right) {
-        selected_tile_info = ti_i
-      }
-    } 
-  }
-  imgui.End()
+            imgui.SameLine()
+            if imgui.TreeNodeEx(cstring(raw_data(
+                fmt.tprintf("%v: %v###%v\x00", ti_i, string(cstring(raw_data(&name))), ti_i),
+            )), {.SpanAvailWidth}) {
+            
+                imgui.InputText("Name", cstring(raw_data(&name)), len(name), {})
+            
+                imgui.ComboEnumDynamic("Collision", collision)
+                imgui.TextUnformattedString(fmt.tprintf("Frame Count: %v", animation.frame_count))
+    
+                {
+                    using animation
+                    imgui.InputInt("Frame Count", &frame_count)
+                    frame_count = clamp(frame_count, 0, MAX_TILE_ANIM_FRAMES)
+                    imgui.Indent()
+                    for i in 0..<frame_count {
+                        imgui.PushID(cstring(raw_data(
+                            fmt.tprintf("%v\x00", i),
+                        )))
+                        frame := &frames[i]
+                        
+                        imgui.InputInt("Frame Duration", &frame.duration)
+                        imgui.TextUnformattedString(
+                            fmt.tprintf("clip_offset: %v", frame.clip_offset),
+                        )
+                        
+                        if imgui.Button("Set Frame") {
+                            frame.clip_offset = { 
+                                (selected_tile == 0) ? 0 : (selected_tile % tileset_size.x),
+                                (selected_tile == 0) ? 0 : (selected_tile / tileset_size.x),
+                            }
+                        }
+                        
+                        imgui.Separator()
+                        imgui.PopID()
+                    }
+                    imgui.Unindent()
+                }
+        
+                imgui.TreePop()
+            }
+            imgui.EndGroup()
+            if imgui.IsItemClickedEx(.Right) {
+                selected_tile_info = ti_i
+            }
+        } 
+    }
+    imgui.End()
 }
 
 render_tileset_editor :: proc() {
-  using Tileset_Editor
-
-  sdl.RenderSetViewport(renderer, nil)
-  sdl.SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff)
-  sdl.RenderClear(renderer)
-
-  clip := sdl.Rect {
-    x = 0, 
-    y = 0,
-    w = i32(texture.width ),
-    h = i32(texture.height),
-  }
-  rect := sdl.Rect {
-    x = 0, 
-    y = 0,
-    w = i32(texture.width ),
-    h = i32(texture.height),
-  }
-  sdl.RenderCopy(renderer, texture.sdl_texture, &clip, &rect)
-
-
-  tile_outline_from_index :: proc(index: i32) -> sdl.Rect {
-    img_size_tiles_x := i32(texture.width) / tile_size
-    return {
-      x = (index == 0) ? 0 : (index % img_size_tiles_x) * tile_size,
-      y = (index == 0) ? 0 : (index / img_size_tiles_x) * tile_size,
-      w = tile_size,
-      h = tile_size,
+    using Tileset_Editor
+  
+    sdl.RenderSetViewport(renderer, nil)
+    sdl.SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff)
+    sdl.RenderClear(renderer)
+  
+    clip := sdl.Rect {
+        x = 0, 
+        y = 0,
+        w = i32(tiles_texture.width ),
+        h = i32(tiles_texture.height),
     }
-  }
-
-  hovered_tile_outline  := tile_outline_from_index(mouseover_tile)
-  selected_tile_outline := tile_outline_from_index(selected_tile )
+    rect := sdl.Rect {
+        x = 0, 
+        y = 0,
+        w = i32(tiles_texture.width ),
+        h = i32(tiles_texture.height),
+    }
+    sdl.RenderCopy(renderer, tiles_texture.sdl_texture, &clip, &rect)
   
-  sdl.SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff)
-  sdl.RenderDrawRect(renderer, &hovered_tile_outline )
-  sdl.SetRenderDrawColor(renderer, 0xff, 0x00, 0xff, 0xff)
-  sdl.RenderDrawRect(renderer, &selected_tile_outline)
-
-
-
+    tile_outline_from_index :: proc(index: i32) -> sdl.Rect {
+        img_size_tiles_x := i32(tiles_texture.width) / tile_size
+        return {
+            x = (index == 0) ? 0 : (index % img_size_tiles_x) * tile_size,
+            y = (index == 0) ? 0 : (index / img_size_tiles_x) * tile_size,
+            w = tile_size,
+            h = tile_size,
+        }
+    }
+  
+    hovered_tile_outline  := tile_outline_from_index(mouseover_tile)
+    selected_tile_outline := tile_outline_from_index(selected_tile )
+    
+    sdl.SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff)
+    sdl.RenderDrawRect(renderer, &hovered_tile_outline )
+    sdl.SetRenderDrawColor(renderer, 0xff, 0x00, 0xff, 0xff)
+    sdl.RenderDrawRect(renderer, &selected_tile_outline)
+    
+    ti := get_tile_info({id = u32(selected_tile_info)})
+    if ti != nil {
+        for i in 0..<ti.animation.frame_count {
+            tri := get_tile_render_info({id = u32(selected_tile_info)})
+            sdl.SetRenderDrawColor(renderer, 0x00, 0x00, 0xff, 0xff)
+            sdl.RenderDrawRect(renderer, &tri.clip)
+        }
+    }
 }
-
-
-/*
-  
-
-
-*/

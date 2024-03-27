@@ -64,16 +64,16 @@ render_entity :: proc(using entity: Entity, tile_render_unit, offset: Vector2) {
   }
 
   // render vector pointing towards player
-  v := unit_vector_between_points(base.position, GameState.player.position)
-  v += base.position
-  sdl.SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff)
-  sdl.RenderDrawLineF(
-    renderer, 
-    base.position.x * TILE_RENDER_SIZE, 
-    base.position.y * TILE_RENDER_SIZE, 
-    v.x * TILE_RENDER_SIZE, 
-    v.y * TILE_RENDER_SIZE,
-  )
+  // v := unit_vector_between_points(base.position, GameState.player.position)
+  // v += base.position
+  // sdl.SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff)
+  // sdl.RenderDrawLineF(
+  //   renderer, 
+  //   base.position.x * TILE_RENDER_SIZE, 
+  //   base.position.y * TILE_RENDER_SIZE, 
+  //   v.x * TILE_RENDER_SIZE, 
+  //   v.y * TILE_RENDER_SIZE,
+  // )
 }
 
 get_entity_collision_rect :: proc(using entity: Entity) -> sdl.Rect {
