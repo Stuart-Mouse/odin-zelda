@@ -16,25 +16,25 @@ import "shared:imgui/imgui_impl_sdlrenderer2"
 
 import "shared:gon"
 
-app_quit : bool = false
+app_quit: bool = false
 
-WINDOW_TITLE  :: "The Legend of Linda"
-WINDOW_WIDTH  : i32 = 640
-WINDOW_HEIGHT : i32 = 480
+WINDOW_TITLE :: "The Legend of Linda"
+WINDOW_WIDTH:  i32 = 640
+WINDOW_HEIGHT: i32 = 480
 
 window   : ^sdl.Window
 renderer : ^sdl.Renderer
 small_text_texture : ^sdl.Texture
 
-ProgramMode :: enum {
+Program_Mode :: enum {
     GAME,
     EDITOR,
     TILESET_EDITOR,
 }
 
-program_mode : ProgramMode = .GAME
+program_mode : Program_Mode = .GAME
 
-ProgramInputKeys :: enum {
+Program_Input_Keys :: enum {
     SET_MODE_GAME,
     SET_MODE_EDITOR,
     SET_MODE_TILESET_EDITOR,
@@ -44,15 +44,15 @@ ProgramInputKeys :: enum {
     COUNT,
 }
 
-program_controller : [ProgramInputKeys.COUNT] InputKey = {
-    ProgramInputKeys.SET_MODE_GAME           = { sc = .F1 },
-    ProgramInputKeys.SET_MODE_EDITOR         = { sc = .F2 },
-    ProgramInputKeys.SET_MODE_TILESET_EDITOR = { sc = .F3 },
-    ProgramInputKeys.RELOAD_SCREEN           = { sc = .F9 },
-    ProgramInputKeys.SHOW_DEBUG_WINDOW       = { sc = .F5 },
+program_controller: [Program_Input_Keys.COUNT] InputKey = {
+    Program_Input_Keys.SET_MODE_GAME           = { sc = .F1 },
+    Program_Input_Keys.SET_MODE_EDITOR         = { sc = .F2 },
+    Program_Input_Keys.SET_MODE_TILESET_EDITOR = { sc = .F3 },
+    Program_Input_Keys.RELOAD_SCREEN           = { sc = .F9 },
+    Program_Input_Keys.SHOW_DEBUG_WINDOW       = { sc = .F5 },
 }
 
-ScreenTransitionType :: enum {
+Screen_Transition_Type :: enum {
     NONE, 
     FADE,
     UP,
@@ -69,7 +69,7 @@ GameState : struct {
     active_screen  : int,
     
     screen_transition : struct {
-        type     : ScreenTransitionType,
+        type     : Screen_Transition_Type,
         progress : f32,
         
         // used to lerp position of player and screen during screen transitions
@@ -86,7 +86,7 @@ get_active_screen :: proc() -> ^World_Screen {
     return &loaded_screens[active_screen]
 }
 
-start_screen_transition :: proc(x, y: i32, transition_type: ScreenTransitionType) {
+start_screen_transition :: proc(x, y: i32, transition_type: Screen_Transition_Type) {
     using GameState
     screen := get_world_screen(x, y)
     if screen == nil do return 
@@ -103,22 +103,22 @@ start_screen_transition :: proc(x, y: i32, transition_type: ScreenTransitionType
     progress = 0
     player_start = { player.position.x, player.position.y }
     switch type {
-        case .UP:
-            player_end  = { player_start.x, SCREEN_TILE_HEIGHT - 0.5 }
-            screen_move = { 0, -1 }
-        case .DOWN:
-            player_end  = { player_start.x, 0.5 }
-            screen_move = { 0, 1 }
-        case .LEFT:
-            player_end  = { SCREEN_TILE_WIDTH - 0.5, player_start.y }
-            screen_move = { -1, 0 }
-        case .RIGHT:
-            player_end  = { 0.5, player_start.y }
-            screen_move = { 1, 0 }
-        case .FADE:
-            // need to determine location to place player on destination screen
-        case .NONE:
-            player.position = { SCREEN_TILE_WIDTH / 2, SCREEN_TILE_HEIGHT / 2 }
+      case .UP:
+        player_end  = { player_start.x, SCREEN_TILE_HEIGHT - 0.5 }
+        screen_move = { 0, -1 }
+      case .DOWN:
+        player_end  = { player_start.x, 0.5 }
+        screen_move = { 0, 1 }
+      case .LEFT:
+        player_end  = { SCREEN_TILE_WIDTH - 0.5, player_start.y }
+        screen_move = { -1, 0 }
+      case .RIGHT:
+        player_end  = { 0.5, player_start.y }
+        screen_move = { 1, 0 }
+      case .FADE:
+        // need to determine location to place player on destination screen
+      case .NONE:
+        player.position = { SCREEN_TILE_WIDTH / 2, SCREEN_TILE_HEIGHT / 2 }
     }
 }
 
@@ -223,7 +223,7 @@ init_game :: proc() -> bool {
 
 update_game :: proc() {
     using GameState
-    if program_controller[ProgramInputKeys.RELOAD_SCREEN].state == KEYSTATE_PRESSED {
+    if program_controller[Program_Input_Keys.RELOAD_SCREEN].state == KEYSTATE_PRESSED {
         start_screen_transition(world_screen_index.x, world_screen_index.y, .NONE)
     }
 
@@ -331,16 +331,16 @@ main :: proc() {
   
         update_mouse()
         update_input_controller(program_controller[:])
-        if program_controller[ProgramInputKeys.SET_MODE_EDITOR].state == KEYSTATE_PRESSED {
+        if program_controller[Program_Input_Keys.SET_MODE_EDITOR].state == KEYSTATE_PRESSED {
             program_mode = .EDITOR
         }
-        if program_controller[ProgramInputKeys.SET_MODE_GAME].state == KEYSTATE_PRESSED {
+        if program_controller[Program_Input_Keys.SET_MODE_GAME].state == KEYSTATE_PRESSED {
             program_mode = .GAME
         }
-        if program_controller[ProgramInputKeys.SET_MODE_TILESET_EDITOR].state == KEYSTATE_PRESSED {
+        if program_controller[Program_Input_Keys.SET_MODE_TILESET_EDITOR].state == KEYSTATE_PRESSED {
             program_mode = .TILESET_EDITOR
         }
-        if program_controller[ProgramInputKeys.SHOW_DEBUG_WINDOW].state == KEYSTATE_PRESSED {
+        if program_controller[Program_Input_Keys.SHOW_DEBUG_WINDOW].state == KEYSTATE_PRESSED {
             show_debug_window = !show_debug_window
         }
   
@@ -353,7 +353,7 @@ main :: proc() {
   
         switch(program_mode) {
             case .GAME:
-                if !GameState.paused || program_controller[ProgramInputKeys.STEP_FRAME].state == KEYSTATE_PRESSED {
+                if !GameState.paused || program_controller[Program_Input_Keys.STEP_FRAME].state == KEYSTATE_PRESSED {
                     update_game()
                 }
                 render_game()

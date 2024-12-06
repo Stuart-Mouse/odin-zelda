@@ -1,11 +1,5 @@
 tiles [
 {
-  name "Empty Tile"
-  collision NONE
-  frames [
-  ]
-}
-{
   name ""
   collision SOLID
   frames [
